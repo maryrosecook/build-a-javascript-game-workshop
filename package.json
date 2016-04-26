@@ -1,0 +1,15 @@
+{
+  "name": "build-a-javascript-game-workshop",
+  "version": "1.0.0",
+  "description": "A workshop where you build a game in JavaScript",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "build-a-javascript-game-workshop"
+  },
+  "author": "Mary Rose Cook mary@maryrosecook.com",
+  "license": "MIT"
+}
