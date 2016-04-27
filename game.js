@@ -1,15 +1,14 @@
+var PLAYER_WIDTH_HEIGHT = 15;
+var INVADER_WIDTH_HEIGHT = 15;
+var BULLET_WIDTH_HEIGHT = 3;
+
 function Game(width, height) {
   this.center = { x: width / 2, y: height / 2 };
   this.size = { x: width, y: height };
 
-  var self = this;
-  var invaders = Invader
-      .startingPositions()
-      .map(function(p) { return new Invader(self, p); });
-
-  var player = new Player(this, { x: this.center.x, y: this.size.y - 15 });
-
-  this.bodies = invaders.concat(player);
+  this.bodies = Invader
+    .createAll(this)
+    .concat(new Player(this, { x: this.center.x, y: this.size.y - PLAYER_WIDTH_HEIGHT }));
 };
 
 Game.prototype = {
@@ -33,7 +32,7 @@ Game.prototype = {
     var self = this;
     return this.bodies.filter(function(b1) {
       return self.bodies
-        .filter(function(b2) { return isColliding(b1, b2); })
+        .filter(function(b2) { return Game.isColliding(b1, b2); })
         .length === 0;
     });
   },
@@ -53,11 +52,28 @@ Game.prototype = {
   }
 };
 
+Game.drawBody = function(screen, body) {
+  screen.fillRect(body.center.x - body.size.x / 2,
+                  body.center.y - body.size.y / 2,
+                  body.size.x,
+                  body.size.y);
+};
+
+Game.isColliding = function(b1, b2) {
+  return !(
+    b1 === b2 ||
+      b1.center.x + b1.size.x / 2 <= b2.center.x - b2.size.x / 2 ||
+      b1.center.y + b1.size.y / 2 <= b2.center.y - b2.size.y / 2 ||
+      b1.center.x - b1.size.x / 2 >= b2.center.x + b2.size.x / 2 ||
+      b1.center.y - b1.size.y / 2 >= b2.center.y + b2.size.y / 2
+  );
+};
+
 function Player(game, center) {
   this.game = game;
-  this.center = { x: center.x, y: center.y - 15 };
-  this.size = { x: 15, y: 15 };
-  this.keyboarder = new Keyboarder();
+  this.center = { x: center.x, y: center.y - PLAYER_WIDTH_HEIGHT };
+  this.size = { x: PLAYER_WIDTH_HEIGHT, y: PLAYER_WIDTH_HEIGHT };
+  this.keyboard = new Keyboard();
 };
 
 Player.prototype = {
@@ -66,13 +82,13 @@ Player.prototype = {
   },
 
   respondToUserInput: function() {
-    if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
+    if (this.keyboard.isDown(this.keyboard.KEYS.LEFT)) {
       this.moveLeft();
-    } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
+    } else if (this.keyboard.isDown(this.keyboard.KEYS.RIGHT)) {
       this.moveRight();
     }
 
-    if (this.keyboarder.isDown(this.keyboarder.KEYS.SPACE)) {
+    if (this.keyboard.isDown(this.keyboard.KEYS.SPACE)) {
       this.shoot();
     }
   },
@@ -92,14 +108,14 @@ Player.prototype = {
   },
 
   draw: function(screen) {
-    drawBody(screen, this);
+    Game.drawBody(screen, this);
   }
 };
 
 function Invader(game, center) {
   this.game = game;
   this.center = center;
-  this.size = { x: 15, y: 15 };
+  this.size = { x: INVADER_WIDTH_HEIGHT, y: INVADER_WIDTH_HEIGHT };
   this.patrolX = 0;
   this.speedX = 0.3;
 };
@@ -137,24 +153,30 @@ Invader.prototype = {
   },
 
   draw: function(screen) {
-    drawBody(screen, this);
+    Game.drawBody(screen, this);
   }
 };
 
-Invader.startingPositions = function() {
-  var positions = [];
-  for (var i = 0; i < 24; i++) {
-    var x = 30 + i % 8 * 30;
-    var y = 30 + i % 3 * 30;
-    positions.push({ x: x, y: y });
+Invader.createAll = function(game) {
+  var ROWS = 3;
+  var COLUMNS = 8;
+  var INVADER_SPACING = 30;
+  var INVADER_COUNT = 24;
+
+  var invaders = [];
+  for (var i = 0; i < INVADER_COUNT; i++) {
+    var x = INVADER_SPACING + i % COLUMNS * INVADER_SPACING;
+    var y = INVADER_SPACING + i % ROWS * INVADER_SPACING;
+
+    invaders.push(new Invader(game, { x: x, y: y }));
   }
 
-  return positions;
+  return invaders;
 };
 
 function Bullet(center, velocity) {
   this.center = center;
-  this.size = { x: 3, y: 3 };
+  this.size = { x: BULLET_WIDTH_HEIGHT, y: BULLET_WIDTH_HEIGHT };
   this.velocity = velocity;
 };
 
@@ -169,11 +191,11 @@ Bullet.prototype = {
   },
 
   draw: function(screen) {
-    drawBody(screen, this);
+    Game.drawBody(screen, this);
   }
 };
 
-function Keyboarder() {
+function Keyboard() {
   var keyState = {};
 
   window.addEventListener("keydown", function(e) {
@@ -189,23 +211,6 @@ function Keyboarder() {
   };
 
   this.KEYS = { LEFT: 37, RIGHT: 39, SPACE: 32 };
-};
-
-function drawBody(screen, body) {
-  screen.fillRect(body.center.x - body.size.x / 2,
-                  body.center.y - body.size.y / 2,
-                  body.size.x,
-                  body.size.y);
-};
-
-function isColliding(b1, b2) {
-  return !(
-    b1 === b2 ||
-      b1.center.x + b1.size.x / 2 <= b2.center.x - b2.size.x / 2 ||
-      b1.center.y + b1.size.y / 2 <= b2.center.y - b2.size.y / 2 ||
-      b1.center.x - b1.size.x / 2 >= b2.center.x + b2.size.x / 2 ||
-      b1.center.y - b1.size.y / 2 >= b2.center.y + b2.size.y / 2
-  );
 };
 
 window.addEventListener("load", function() {
