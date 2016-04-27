@@ -10,8 +10,7 @@ https://github.com/maryrosecook/build-your-own-javascript-game-workshop
 
 ## The itinerary
 
-1. I'll livecode Space Invaders from scratch.  (Or, if you're not in
-the workshop, you can watch a [video](https://vimeo.com/105955605)).
+1. I'll livecode Space Invaders from scratch.
 2. We'll briefly dissect the architectural approach I used.
 3. We'll talk about an approach for testing game code.
 4. You'll choose what game to implement: Snake, Asteroids, Lunar Lander.

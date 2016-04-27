@@ -1,37 +1,41 @@
-function Game() {
-  var screen = document.getElementById("screen").getContext("2d");
-  this.size = { x: screen.canvas.width, y: screen.canvas.height };
-  this.center = { x: this.size.x / 2, y: this.size.y / 2 };
-
-  this.bodies = createInvaders(this).concat(new Player(this));
-
-  this.shootSound = document.getElementById("shoot-sound");
+function Game(width, height) {
+  this.center = { x: width / 2, y: height / 2 };
+  this.size = { x: width, y: height };
 
   var self = this;
-  function tick() {
-    self.update();
-    self.draw(screen);
-    requestAnimationFrame(tick);
-  };
+  var invaders = Invader
+      .startingPositions()
+      .map(function(p) { return new Invader(self, p); });
 
-  tick();
+  var player = new Player(this, { x: this.center.x, y: this.size.y - 15 });
+
+  this.bodies = invaders.concat(player);
 };
 
 Game.prototype = {
   update: function() {
-    var self = this;
-    function notCollidingWithAnything(b1) {
-      return self.bodies.filter(function(b2) { return isColliding(b1, b2); }).length === 0;
-    };
+    this.bodies = this.bodiesNotColliding();
 
-    this.bodies = this.bodies.filter(notCollidingWithAnything);
-
-    this.bodies.forEach(function(b) { b.update(); });
+    this.bodies.forEach(function(body) {
+      body.update();
+    });
   },
 
   draw: function(screen) {
     screen.clearRect(0, 0, this.size.x, this.size.y);
-    this.bodies.forEach(function(b) { b.draw(screen); });
+
+    this.bodies.forEach(function(body) {
+      body.draw(screen);
+    });
+  },
+
+  bodiesNotColliding: function() {
+    var self = this;
+    return this.bodies.filter(function(b1) {
+      return self.bodies
+        .filter(function(b2) { return isColliding(b1, b2); })
+        .length === 0;
+    });
   },
 
   addBody: function(body) {
@@ -39,36 +43,52 @@ Game.prototype = {
   },
 
   invadersBelow: function(invader) {
-    return this.bodies.filter(function(b) {
-      return b instanceof Invader &&
-        b.center.y > invader.center.y &&
-        Math.abs(b.center.x - invader.center.x) < invader.size.x;
-    }).length > 0;
+    return this.bodies
+      .filter(function(b) {
+        return b instanceof Invader &&
+          b.center.y > invader.center.y &&
+          Math.abs(b.center.x - invader.center.x) < invader.size.x;
+      })
+      .length > 0;
   }
 };
 
-function Player(game) {
+function Player(game, center) {
   this.game = game;
+  this.center = { x: center.x, y: center.y - 15 };
   this.size = { x: 15, y: 15 };
-  this.center = { x: game.center.x, y: game.size.y - 15 };
   this.keyboarder = new Keyboarder();
 };
 
 Player.prototype = {
   update: function() {
+    this.respondToUserInput();
+  },
+
+  respondToUserInput: function() {
     if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
-      this.center.x -= 2;
+      this.moveLeft();
     } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
-      this.center.x += 2;
+      this.moveRight();
     }
 
     if (this.keyboarder.isDown(this.keyboarder.KEYS.SPACE)) {
-      this.game.addBody(new Bullet(this.game,
-                                   { x: this.center.x, y: this.center.y - this.size.x },
-                                   { x: 0, y: -6 }));
-      this.game.shootSound.load();
-      this.game.shootSound.play();
+      this.shoot();
     }
+  },
+
+  moveLeft: function() {
+    this.center.x -= 2;
+  },
+
+  moveRight: function() {
+    this.center.x += 2;
+  },
+
+  shoot: function() {
+    this.game.addBody(new Bullet({ x: this.center.x,
+                                   y: this.center.y - this.size.x },
+                                 { x: 0, y: -6 }));
   },
 
   draw: function(screen) {
@@ -78,26 +98,42 @@ Player.prototype = {
 
 function Invader(game, center) {
   this.game = game;
-  this.size = { x: 15, y: 15 };
   this.center = center;
+  this.size = { x: 15, y: 15 };
   this.patrolX = 0;
   this.speedX = 0.3;
 };
 
 Invader.prototype = {
   update: function() {
-    if (this.patrolX < 0 || this.patrolX > 40) {
+    this.patrol();
+
+    if (this.shouldShoot()) {
+      this.shoot();
+    }
+  },
+
+  patrol: function() {
+    if (this.shouldTurnAround()) {
       this.speedX = -this.speedX;
     }
 
     this.center.x += this.speedX;
     this.patrolX += this.speedX;
+  },
 
-    if (Math.random() > 0.995 && !this.game.invadersBelow(this)) {
-      this.game.addBody(new Bullet(this.game,
-                                   { x: this.center.x, y: this.center.y + this.size.x },
-                                   { x: 0, y: 2 }));
-    }
+  shouldTurnAround: function() {
+    return this.patrolX < 0 || this.patrolX > 40;
+  },
+
+  shouldShoot: function() {
+    return Math.random() > 0.995 && !this.game.invadersBelow(this);
+  },
+
+  shoot: function() {
+    this.game.addBody(new Bullet({ x: this.center.x,
+                                   y: this.center.y + this.size.x },
+                                 { x: 0, y: 2 }));
   },
 
   draw: function(screen) {
@@ -105,15 +141,29 @@ Invader.prototype = {
   }
 };
 
-function Bullet(game, center, velocity) {
-  this.game = game;
-  this.size = { x: 3, y: 3 };
+Invader.startingPositions = function() {
+  var positions = [];
+  for (var i = 0; i < 24; i++) {
+    var x = 30 + i % 8 * 30;
+    var y = 30 + i % 3 * 30;
+    positions.push({ x: x, y: y });
+  }
+
+  return positions;
+};
+
+function Bullet(center, velocity) {
   this.center = center;
+  this.size = { x: 3, y: 3 };
   this.velocity = velocity;
 };
 
 Bullet.prototype = {
   update: function() {
+    this.moveWithVelocity();
+  },
+
+  moveWithVelocity: function() {
     this.center.x += this.velocity.x;
     this.center.y += this.velocity.y;
   },
@@ -121,17 +171,6 @@ Bullet.prototype = {
   draw: function(screen) {
     drawBody(screen, this);
   }
-};
-
-function createInvaders(game) {
-  var invaders = [];
-  for (var i = 0; i < 24; i++) {
-    var x = 30 + i % 8 * 30;
-    var y = 30 + i % 3 * 30;
-    invaders.push(new Invader(game, { x: x, y: y }));
-  }
-
-  return invaders;
 };
 
 function Keyboarder() {
@@ -152,6 +191,13 @@ function Keyboarder() {
   this.KEYS = { LEFT: 37, RIGHT: 39, SPACE: 32 };
 };
 
+function drawBody(screen, body) {
+  screen.fillRect(body.center.x - body.size.x / 2,
+                  body.center.y - body.size.y / 2,
+                  body.size.x,
+                  body.size.y);
+};
+
 function isColliding(b1, b2) {
   return !(
     b1 === b2 ||
@@ -162,13 +208,15 @@ function isColliding(b1, b2) {
   );
 };
 
-function drawBody(screen, body) {
-  screen.fillRect(body.center.x - body.size.x / 2,
-                  body.center.y - body.size.y / 2,
-                  body.size.x,
-                  body.size.y);
-};
-
 window.addEventListener("load", function() {
-  new Game();
+  var screen = document.getElementById("screen").getContext("2d");
+  var game = new Game(screen.canvas.width, screen.canvas.height);
+
+  function run() {
+    game.update();
+    game.draw(screen);
+    requestAnimationFrame(run);
+  };
+
+  run();
 });
