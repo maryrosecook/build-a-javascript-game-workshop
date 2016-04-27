@@ -2,13 +2,10 @@ var PLAYER_WIDTH_HEIGHT = 15;
 var INVADER_WIDTH_HEIGHT = 15;
 var BULLET_WIDTH_HEIGHT = 3;
 
-function Game(width, height) {
-  this.center = { x: width / 2, y: height / 2 };
-  this.size = { x: width, y: height };
-
-  this.bodies = Invader
-    .createAll(this)
-    .concat(new Player(this, { x: this.center.x, y: this.size.y - PLAYER_WIDTH_HEIGHT }));
+function Game(size) {
+  this.center = { x: size.x / 2, y: size.y / 2 };
+  this.size = size;
+  this.bodies = [];
 };
 
 Game.prototype = {
@@ -215,13 +212,19 @@ function Keyboard() {
 
 window.addEventListener("load", function() {
   var screen = document.getElementById("screen").getContext("2d");
-  var game = new Game(screen.canvas.width, screen.canvas.height);
+  var gameSize = { x: screen.canvas.width, y: screen.canvas.height };
+  var game = new Game(gameSize);
 
-  function run() {
+  game.addBody(new Player(game, { x: gameSize.x / 2, y: gameSize.y - PLAYER_WIDTH_HEIGHT }));
+  Invader.createAll(game).forEach(function(invader) {
+    game.addBody(invader);
+  });
+
+  function tick() {
     game.update();
     game.draw(screen);
-    requestAnimationFrame(run);
+    requestAnimationFrame(tick);
   };
 
-  run();
+  tick();
 });
