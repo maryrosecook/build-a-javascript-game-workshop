@@ -87,9 +87,3 @@ because the lander has to be able to rest on the landing pad.
 
 See `canvas-drawing-reference.md` in the root of this repo.  It has
 code for drawing lines, polygons and circles, and setting colours.
-
-## Collision detection
-
-See `handy-collision-detection-functions.js` in the root of this repo.
-It has a function for detecting if two rectangles are intersecting,
-and a function for detecting if two lines are intersecting.
