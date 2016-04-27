@@ -4,12 +4,15 @@
   "description": "A workshop where you build a game in JavaScript",
   "main": "game.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node node_modules/jasmine-node/lib/jasmine-node/cli.js --color spec/"
   },
   "repository": {
     "type": "git",
     "url": "build-a-javascript-game-workshop"
   },
   "author": "Mary Rose Cook mary@maryrosecook.com",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jasmine-node": "^1.14.5"
+  }
 }
