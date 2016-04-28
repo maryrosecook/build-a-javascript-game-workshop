@@ -1,8 +1,9 @@
 function Invader(game, center) {
-  var INVADER_WIDTH_HEIGHT = 15;
+  var WIDTH_HEIGHT = 15;
+
   this.game = game;
   this.center = center;
-  this.size = { x: INVADER_WIDTH_HEIGHT, y: INVADER_WIDTH_HEIGHT };
+  this.size = { x: WIDTH_HEIGHT, y: WIDTH_HEIGHT };
   this.patrolX = 0;
   this.speedX = 0.3;
 };

@@ -1,8 +1,9 @@
 function Player(game, center) {
-  var PLAYER_WIDTH_HEIGHT = 15;
+  var WIDTH_HEIGHT = 15;
+
   this.game = game;
   this.center = { x: center.x, y: center.y - PLAYER_WIDTH_HEIGHT };
-  this.size = { x: PLAYER_WIDTH_HEIGHT, y: PLAYER_WIDTH_HEIGHT };
+  this.size = { x: WIDTH_HEIGHT, y: WIDTH_HEIGHT };
   this.keyboard = new Keyboard();
 };
 

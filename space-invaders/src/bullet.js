@@ -2,7 +2,7 @@ function Bullet(center, velocity) {
   var WIDTH_HEIGHT = 3;
 
   this.center = center;
-  this.size = { x: BULLET_WIDTH_HEIGHT, y: BULLET_WIDTH_HEIGHT };
+  this.size = { x: WIDTH_HEIGHT, y: WIDTH_HEIGHT };
   this.velocity = velocity;
 };
 
