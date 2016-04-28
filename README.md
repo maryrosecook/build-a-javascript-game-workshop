@@ -8,7 +8,7 @@
 
 ## Code for this workshop
 
-https://github.com/maryrosecook/build-your-own-javascript-game-workshop
+https://github.com/maryrosecook/build-a-javascript-game-workshop
 
 ## The itinerary
 
