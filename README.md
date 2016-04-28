@@ -96,5 +96,6 @@ running.
 
 ## Canvas drawing reference
 
-See `canvas-drawing-reference.md` in the root of this repo.  It has
-code for drawing lines, polygons and circles, and setting colours.
+See [canvas-drawing-reference.md](canvas-drawing-reference.md) in the
+root of this repo.  It has code for drawing lines, polygons and
+circles, and setting colours.
