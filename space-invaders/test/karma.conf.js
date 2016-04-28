@@ -4,7 +4,7 @@ module.exports = function(config){
     basePath: '../',
 
     files: [
-      'src/**/*.js',
+      'src/**/!(run-game).js',
       'test/unit/**/*.js'
     ],
 
