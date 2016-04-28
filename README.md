@@ -4,6 +4,8 @@
 * https://maryrosecook.com
 * mary@maryrosecook.com
 
+![Screenshot of Space Invaders](images/space-invaders-screenshot.png)
+
 ## Code for this workshop
 
 https://github.com/maryrosecook/build-your-own-javascript-game-workshop
@@ -41,11 +43,19 @@ The code is in `game.js`.
 
 ### Install Python 2
 
-### Run
+### Run Space Invaders game
 
 To serve the Space Invaders code
 
-    $ cd build-a-javascript-game-workshop/
+    $ cd build-a-javascript-game-workshop/space-invaders/
+    $ python -m SimpleHTTPServer 4000
+    $ open index.html
+
+### Run livecoded game
+
+To serve the livecoded code
+
+    $ cd build-a-javascript-game-workshop/livecoded-game/
     $ python -m SimpleHTTPServer 4000
     $ open index.html
 
