@@ -12,20 +12,21 @@ https://github.com/maryrosecook/build-your-own-javascript-game-workshop
 
 ## The itinerary
 
-1. I'll livecode Space Invaders from scratch.
+1. I'll livecode a small game from scratch.
 2. We'll briefly dissect the architectural approach I used.
 3. We'll talk about an approach for testing game code.
-4. You'll choose what game to implement: Snake, Asteroids, Lunar Lander.
-5. You'll spend the rest of the workshop implementing your game.  I'll
-be here to troubleshoot and give advice.
+4. You'll choose what game to implement: Snake, Asteroids, Lunar
+Lander.
+5. You'll break into pairs spend the rest of the workshop implementing
+your game.  I'll be here to help.
 
 ## The aims of this workshop
 
-Every game has different, gameplay-specific problems that need to be solved.
-The solutions to these problems are different for different games.
-If this workshop were about how to do animation, or player movement,
-or collision resolution, it would not be very useful.  The techniques
-I presented would be useful for some games, but not others.
+Every game has different, gameplay-specific problems that need to be
+solved.  The solutions to these problems are different for different
+games.  If this workshop were about how to do animation, or player
+movement, or collision resolution, it would not be very useful.  The
+techniques I presented would be useful for some games, but not others.
 
 This workshop is based around letting you practice using an
 architectural approach that is good for building 2D action games.
@@ -37,7 +38,7 @@ your first game.
 
 ## Space Invaders
 
-The code is in `game.js`.
+The code is in `space-invaders/src/`.
 
 ## Running the game
 
@@ -59,9 +60,9 @@ To serve the livecoded code
     $ python -m SimpleHTTPServer 4000
     $ open index.html
 
-## Running the tests
+## Running the tests for Space Invaders
 
-    $ cd build-a-javascript-game-workshop/
+    $ cd build-a-javascript-game-workshop
     $ npm install
     $ npm test
 
@@ -82,8 +83,9 @@ Requries some trigonometry to detect when lines are intersecting.
 
 ### Lunar Lander
 
-Requires some trigonometry to detect when lines are intersecting.  Also fiddly
-because the lander has to be able to rest on the landing pad.
+Requires some trigonometry to detect when lines are intersecting.
+Also fiddly because the lander has to be able to rest on the landing
+pad.
 
 ![Screenshot of Lunar Lander](images/lunar-lander-screenshot.png)
 
@@ -93,7 +95,8 @@ because the lander has to be able to rest on the landing pad.
 
 2. Create a game tick function and get it running many times a second.
 
-3. Create a player body and get its `update()` and `draw()` functions running.
+3. Create a player body and get its `update()` and `draw()` functions
+running.
 
 4. Use the keyboard to move the player around.
 
