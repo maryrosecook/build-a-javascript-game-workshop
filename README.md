@@ -37,7 +37,7 @@ your first game.
 
 The code is in `game.js`.
 
-## Running a JavaScript game
+## Running the game
 
 ### Install Python 2
 
@@ -48,6 +48,12 @@ To serve the Space Invaders code
     $ cd build-a-javascript-game-workshop/
     $ python -m SimpleHTTPServer 4000
     $ open index.html
+
+## Running the tests
+
+    $ cd build-a-javascript-game-workshop/
+    $ npm install
+    $ npm test
 
 ## What game to make?
 

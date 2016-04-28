@@ -4,15 +4,20 @@
   "description": "A workshop where you build a game in JavaScript",
   "main": "game.js",
   "scripts": {
-    "test": "node node_modules/jasmine-node/lib/jasmine-node/cli.js --color spec/"
+    "test": "./node_modules/karma/bin/karma start test/karma.conf.js"
   },
   "repository": {
     "type": "git",
-    "url": "build-a-javascript-game-workshop"
+    "url": "https://github.com/maryrosecook/build-a-javascript-game-workshop"
   },
   "author": "Mary Rose Cook mary@maryrosecook.com",
   "license": "MIT",
-  "dependencies": {
-    "jasmine-node": "^1.14.5"
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-cli": "^0.1.2",
+    "karma-jasmine": "^0.3.8"
   }
 }
