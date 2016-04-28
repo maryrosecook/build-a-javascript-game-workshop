@@ -1,14 +1,6 @@
 # Build a JavaScript game (Makers Academy workshop)
 
-* By Mary Rose Cook
-* https://maryrosecook.com
-* mary@maryrosecook.com
-
 ![Screenshot of Space Invaders](images/space-invaders-screenshot.png)
-
-## Code for this workshop
-
-https://github.com/maryrosecook/build-a-javascript-game-workshop
 
 ## The itinerary
 
