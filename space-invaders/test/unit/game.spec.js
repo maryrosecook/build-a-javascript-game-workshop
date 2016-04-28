@@ -8,10 +8,11 @@ describe("Game", function() {
   describe("addBody", function() {
     it("should be able to add body", function() {
       var game = new Game();
-      var body = { update: function() { } };
+      var body = jasmine.createSpyObj('body', ['update']);
+
       game.addBody(body);
-      expect(new Game({}) instanceof Game).toEqual(true);
+      game.update();
+      expect(body.update).toHaveBeenCalled();
     });
   });
-
 });
