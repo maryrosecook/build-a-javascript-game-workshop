@@ -20,6 +20,10 @@ Game.prototype = {
     });
   },
 
+  addBody: function(body) {
+    this.bodies.push(body);
+  },
+
   bodiesNotColliding: function() {
     var self = this;
     return this.bodies.filter(function(b1) {
@@ -27,10 +31,6 @@ Game.prototype = {
         .filter(function(b2) { return Game.isColliding(b1, b2); })
         .length === 0;
     });
-  },
-
-  addBody: function(body) {
-    this.bodies.push(body);
   },
 
   invadersBelow: function(invader) {
