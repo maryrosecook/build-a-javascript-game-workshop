@@ -8,7 +8,7 @@ describe("Game", function() {
   describe("addBody", function() {
     it("should be able to add body", function() {
       var game = new Game();
-      var body = jasmine.createSpyObj('body', ['update']);
+      var body = jasmine.createSpyObj("body", ["update"]);
 
       game.addBody(body);
       game.update();
