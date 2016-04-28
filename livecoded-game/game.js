@@ -4,11 +4,12 @@ window.addEventListener("load", function() {
   var gameSize = { x: screen.canvas.width, y: screen.canvas.height };
 
   var game = new Game(gameSize);
-  game.addBody(new Player(game, { x: gameSize.x / 2, y: gameSize.y / 2 }));
+  game.addBody(new Player(game, gameSize));
 
   function tick() {
     game.update();
     game.draw(screen);
+
     requestAnimationFrame(tick);
   };
 
@@ -16,8 +17,8 @@ window.addEventListener("load", function() {
 });
 
 function Game(size) {
-  this.bodies = [];
   this.size = size;
+  this.bodies = [];
 };
 
 Game.prototype = {
@@ -40,51 +41,38 @@ Game.prototype = {
   }
 };
 
-Game.drawBody = function(screen, body) {
-  screen.fillRect(body.center.x - body.size.x / 2,
-                  body.center.y - body.size.y / 2,
-                  body.size.x,
-                  body.size.y);
-};
-
-var Keyboard = function() {
-  var keyState = {};
-
-  window.addEventListener("keydown", function(e) {
-    keyState[e.keyCode] = true;
-  });
-
-  window.addEventListener("keyup", function(e) {
-    keyState[e.keyCode] = false;
-  });
-
-  this.isDown = function(keyCode) {
-    return keyState[keyCode] === true;
-  };
-
-  this.KEYS = { LEFT: 37, RIGHT: 39, SPACE: 32 };
-};
-
-function Player(game, center) {
+function Player(game, gameSize) {
   var WIDTH_HEIGHT = 15;
 
   this.game = game;
-  this.center = center;
-  this.size = { x: WIDTH_HEIGHT, y: WIDTH_HEIGHT };
   this.keyboard = new Keyboard();
+  this.center = { x: gameSize.x / 2, y: gameSize.y / 2 };
+  this.size = { x: WIDTH_HEIGHT, y: WIDTH_HEIGHT };
 };
 
 Player.prototype = {
   update: function() {
+    this.movePlayerInResponseToInput();
+    this.shootInResponseToInput();
+  },
+
+  movePlayerInResponseToInput: function() {
     if (this.keyboard.isDown(this.keyboard.KEYS.LEFT)) {
       this.moveLeft();
     } else if (this.keyboard.isDown(this.keyboard.KEYS.RIGHT)) {
       this.moveRight();
     }
+  },
 
+  shootInResponseToInput: function() {
     if (this.keyboard.isDown(this.keyboard.KEYS.SPACE)) {
       this.shoot();
     }
+  },
+
+  shoot: function() {
+    this.game.addBody(new Bullet({ x: this.center.x, y: this.center.y - this.size.y },
+                                 { x: 0, y: -2 }));
   },
 
   moveLeft: function() {
@@ -95,23 +83,36 @@ Player.prototype = {
     this.center.x += 2;
   },
 
-  shoot: function() {
-    this.game.addBody(new Bullet({
-      x: this.center.x,
-      y: this.center.y - this.size.y
-    }));
-  },
-
   draw: function(screen) {
-    Game.drawBody(screen, this);
+    screen.fillRect(this.center.x - this.size.x / 2,
+                    this.center.y - this.size.y / 2,
+                    this.size.x,
+                    this.size.y);
   }
 };
 
-function Bullet(center) {
-  var WIDTH_HEIGHT = 3;
+function Keyboard() {
+  var keyState = {};
+
+  window.addEventListener("keydown", function(event) {
+    keyState[event.keyCode] = true;
+  });
+
+  window.addEventListener("keyup", function(event) {
+    keyState[event.keyCode] = false;
+  });
+
+  this.isDown = function(keyCode) {
+    return keyState[keyCode] === true;
+  };
+
+  this.KEYS = { LEFT: 37, RIGHT: 39, SPACE: 32 };
+};
+
+function Bullet(center, velocity) {
   this.center = center;
-  this.size = { x: WIDTH_HEIGHT, y: WIDTH_HEIGHT };
-  this.velocity = { x: 0, y: -3 };
+  this.size = { x: 10, y: 10 };
+  this.velocity = velocity;
 };
 
 Bullet.prototype = {
@@ -125,6 +126,9 @@ Bullet.prototype = {
   },
 
   draw: function(screen) {
-    Game.drawBody(screen, this);
+    screen.fillRect(this.center.x - this.size.x / 2,
+                    this.center.y - this.size.y / 2,
+                    this.size.x,
+                    this.size.y);
   }
 };

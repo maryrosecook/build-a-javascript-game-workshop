@@ -49,16 +49,16 @@ The code is in `space-invaders/src/`.
 To serve the Space Invaders code
 
     $ cd build-a-javascript-game-workshop/space-invaders/
-    $ python -m SimpleHTTPServer 4000
     $ open index.html
+    $ python -m SimpleHTTPServer 4000
 
 ### Run livecoded game
 
 To serve the livecoded code
 
     $ cd build-a-javascript-game-workshop/livecoded-game/
-    $ python -m SimpleHTTPServer 4000
     $ open index.html
+    $ python -m SimpleHTTPServer 4000
 
 ## Running the tests for Space Invaders
 
